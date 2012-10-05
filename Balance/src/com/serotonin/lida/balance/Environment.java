@@ -7,6 +7,7 @@ import edu.memphis.ccrg.lida.framework.tasks.FrameworkTaskImpl;
 
 public class Environment extends EnvironmentImpl {
     private static final double GRAVITY = 0.00001;
+    private static final double REFLECTIVENESS = 0.5; /* How bouncy are the limits */
     private static final double HALFPI = StrictMath.PI / 2;
 
     // Angle of pole lean where 0 is upright.
@@ -29,12 +30,14 @@ public class Environment extends EnvironmentImpl {
             poleVelocity += StrictMath.sin(poleAngle) * GRAVITY;
             poleAngle += poleVelocity;
             if (poleAngle > HALFPI) {
-                poleAngle = HALFPI;
-                poleVelocity = 0;
+                double diff = (poleAngle - HALFPI) * REFLECTIVENESS;
+                poleAngle = HALFPI - diff;
+                poleVelocity = -poleVelocity * REFLECTIVENESS;
             }
             else if (poleAngle < -HALFPI) {
-                poleAngle = -HALFPI;
-                poleVelocity = 0;
+                double diff = (HALFPI + poleAngle) * REFLECTIVENESS;
+                poleAngle = -HALFPI - diff;
+                poleVelocity = -poleVelocity * REFLECTIVENESS;
             }
         }
     }
